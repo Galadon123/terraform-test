@@ -62,8 +62,12 @@ resource "aws_instance" "ec2" {
   key_name      = aws_key_pair.main.key_name
 
   tags = {
-    Name = "public-ec2-instance"
+    Name = "ec2-instance"
   }
 
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }

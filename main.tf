@@ -11,7 +11,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "4.0.0"
 
-  name = "my-vpc"
+  name = "my-vpc-porodhi"
   cidr = "10.0.0.0/16"
 
   azs            = ["ap-southeast-1a"]
@@ -51,7 +51,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_key_pair" "main" {
-  key_name   = "ssh-key"
+  key_name   = "id_rsa"
   public_key = var.ssh_public_key
 }
 

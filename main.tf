@@ -51,7 +51,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_key_pair" "main" {
-  key_name   = "ssh-access-key"
+  key_name   = "sshkey"
   public_key = var.ssh_public_key
 }
 

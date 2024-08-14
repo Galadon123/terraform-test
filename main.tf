@@ -11,7 +11,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "4.0.0"
 
-  name = "my-vpc-porodhi"
+  name = "my-vpc"
   cidr = "10.0.0.0/16"
 
   azs            = ["ap-southeast-1a"]

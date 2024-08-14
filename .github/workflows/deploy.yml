@@ -1,46 +1,52 @@
-name: Terraform AWS Deployment
+name: 'Terraform'
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   terraform:
+    name: 'Terraform'
     runs-on: ubuntu-latest
+    environment: production
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v3
 
-      - name: Setup SSH Key
-        id: ssh_key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
-          chmod 600 ~/.ssh/id_rsa
-          chmod 644 ~/.ssh/id_rsa.pub
-          cat ~/.ssh/id_rsa.pub
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_wrapper: false
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Configure Terraform Credentials
-        run: |
-          mkdir -p ~/.terraform.d
-          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TF_CLOUD_TOKEN }}"}}}' > ~/.terraform.d/credentials.tfrc.json
+    - name: Terraform Init
+      run: terraform init
 
-      - name: AWS Configure
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region ap-southeast-1
+    - name: Terraform Format
+      run: terraform fmt -check
 
-      - name: Terraform Init
-        run: terraform init
+    - name: Terraform Plan
+      run: terraform plan -input=false
+      env:
+        TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -var "ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false
+      env:
+        TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}

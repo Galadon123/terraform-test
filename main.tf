@@ -1,3 +1,13 @@
+
+terraform {
+  backend "remote" {
+    organization = "terraform_projects_poridhi"
+
+    workspaces {
+      name = "poridhi-terraform"
+    }
+  }
+}
 variable "ssh_public_key" {
   type = string
   description = "The public SSH key to be used for the EC2 instance"
@@ -53,10 +63,6 @@ resource "aws_security_group" "ec2_sg" {
 resource "aws_key_pair" "main" {
   key_name   = "ssh-key"
   public_key = var.ssh_public_key
-
-  lifecycle {
-    ignore_changes = [public_key]
-  }
 }
 
 

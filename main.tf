@@ -61,7 +61,7 @@ resource "aws_security_group" "ec2_sg" {
 # Key Pair
 resource "aws_key_pair" "main" {
   key_name   = "main-key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = var.ssh_public_key
 }
 
 # EC2 Instance

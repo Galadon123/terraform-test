@@ -58,12 +58,16 @@ resource "aws_security_group" "ec2_sg" {
   }
 }
 
+variable "ssh_public_key" {
+  description = "The public key for SSH access"
+  type        = string
+}
+
 # Key Pair
 resource "aws_key_pair" "main" {
   key_name   = "main-key"
   public_key = var.ssh_public_key
 }
-
 # EC2 Instance
 resource "aws_instance" "ec2" {
   ami           = "ami-060e277c0d4cce553"  # Example Ubuntu AMI

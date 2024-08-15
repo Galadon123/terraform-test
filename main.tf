@@ -21,7 +21,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "4.0.0"
 
-  name = "my-vpc-porodhi"
+  name = "my-vpc"
   cidr = "10.0.0.0/16"
 
   azs            = ["ap-southeast-1a"]
@@ -79,7 +79,7 @@ resource "aws_instance" "ec2" {
   key_name      = aws_key_pair.main.key_name
 
   tags = {
-    Name = "public-ec2-instance"
+    Name = "server"
   }
 
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]

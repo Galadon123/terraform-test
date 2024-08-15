@@ -73,13 +73,6 @@ resource "aws_instance" "ec2" {
   instance_type = "t2.micro"
   subnet_id     = module.vpc.public_subnets[0]
   key_name      = aws_key_pair.main.key_name
-
-  tags = {
-    Name = "public-ec2-instance"
-  }
-
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-
   user_data = <<-EOF
               #!/bin/bash
               # Update and install necessary packages
@@ -119,4 +112,10 @@ resource "aws_instance" "ec2" {
               sudo systemctl daemon-reload
               sudo systemctl enable --now code-server
             EOF
+  tags = {
+    Name = "public-ec2-instance"
+  }
+
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+
 }

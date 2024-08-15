@@ -109,12 +109,12 @@ resource "aws_instance" "ec2" {
               Type=simple
               User=ubuntu
               Environment="PASSWORD=105925"
-              ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080 /home/ubuntu
+              ExecStart=/usr/local/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 
               [Install]
               WantedBy=multi-user.target' | sudo tee /etc/systemd/system/code-server.service
-              
+
               sudo systemctl daemon-reload
               sudo systemctl enable code-server
               sudo systemctl start code-server

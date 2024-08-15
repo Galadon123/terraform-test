@@ -100,7 +100,7 @@ resource "aws_instance" "ec2" {
               # Install VS Code Server
               curl -fsSL https://code-server.dev/install.sh | sh
 
-              # Create VS Code Server systemd service
+              # Create VS Code Server systemd service with password setup
               echo '[Unit]
               Description=VS Code Server
               After=network.target
@@ -109,14 +109,14 @@ resource "aws_instance" "ec2" {
               Type=simple
               User=ubuntu
               Environment="PASSWORD=105925"
-              ExecStart=/usr/local/bin/code-server --bind-addr 0.0.0.0:8080
+              ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 
               [Install]
               WantedBy=multi-user.target' | sudo tee /etc/systemd/system/code-server.service
 
+              # Reload systemd to apply changes
               sudo systemctl daemon-reload
-              sudo systemctl enable code-server
-              sudo systemctl start code-server
+              sudo systemctl enable --now code-server
             EOF
 }

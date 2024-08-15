@@ -8,10 +8,6 @@ terraform {
   }
 }
 
-variable "ssh_public_key" {
-  type        = string
-  description = "The public SSH key to be used for the EC2 instance"
-}
 
 provider "aws" {
   region = "ap-southeast-1"
@@ -21,7 +17,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "4.0.0"
 
-  name = "my-vpc"
+  name = "my-vpc-porodhi"
   cidr = "10.0.0.0/16"
 
   azs            = ["ap-southeast-1a"]
@@ -68,7 +64,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_key_pair" "main" {
-  key_name   = "id_rsa-key"
+  key_name   = "id_rsa-key-1"
   public_key = var.ssh_public_key
 }
 
@@ -79,7 +75,7 @@ resource "aws_instance" "ec2" {
   key_name      = aws_key_pair.main.key_name
 
   tags = {
-    Name = "server"
+    Name = "public-ec2-instance"
   }
 
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]

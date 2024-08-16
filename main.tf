@@ -10,7 +10,7 @@ terraform {
 
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = "us-east-1"
 }
 
 module "vpc" {
@@ -20,7 +20,7 @@ module "vpc" {
   name = "my-vpc"
   cidr = "10.0.0.0/16"
 
-  azs            = ["ap-southeast-1a"]
+  azs            = ["us-east-1a"]
   public_subnets = ["10.0.1.0/24"]
 
   enable_dns_hostnames = true
@@ -101,7 +101,7 @@ resource "aws_instance" "ec2" {
               [Service]
               Type=simple
               User=ubuntu
-              Environment="PASSWORD=2525"
+              Environment="PASSWORD=105925"
               ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 

@@ -17,9 +17,14 @@ data "aws_vpc" "default" {
   default = true
 }
 
-# Fetch the first subnet in the default VPC
-data "aws_subnet" "default" {
+# Fetch all subnets in the default VPC
+data "aws_subnets" "default" {
   vpc_id = data.aws_vpc.default.id
+}
+
+# Select the first subnet based on the index
+data "aws_subnet" "default" {
+  id = data.aws_subnets.default.ids[0]
 }
 
 resource "aws_security_group" "ec2_sg" {

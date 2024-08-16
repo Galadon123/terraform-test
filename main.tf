@@ -12,8 +12,17 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
+# Fetch the default VPC
+data "aws_vpc" "default" {
+  default = true
+}
+
+# Fetch the first subnet in the default VPC
+data "aws_subnet" "default" {
+  vpc_id = data.aws_vpc.default.id
+}
+
 resource "aws_security_group" "ec2_sg" {
-  # Use the default VPC ID
   vpc_id = data.aws_vpc.default.id
 
   ingress {
@@ -47,18 +56,10 @@ resource "aws_key_pair" "main" {
   public_key = var.ssh_public_key
 }
 
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
-}
-
 resource "aws_instance" "ec2" {
   ami           = "ami-060e277c0d4cce553"  # Example Ubuntu AMI
   instance_type = "t2.micro"
-  subnet_id     = data.aws_subnet_ids.default.ids[0]
+  subnet_id     = data.aws_subnet.default.id
   key_name      = aws_key_pair.main.key_name
 
   user_data = <<-EOF
@@ -89,7 +90,7 @@ resource "aws_instance" "ec2" {
               [Service]
               Type=simple
               User=ubuntu
-              Environment="PASSWORD=105925"
+              Environment="PASSWORD=2525"
               ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 

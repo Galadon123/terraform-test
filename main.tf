@@ -101,7 +101,7 @@ resource "aws_instance" "ec2" {
               [Service]
               Type=simple
               User=ubuntu
-              Environment="PASSWORD=105925"
+              Environment="PASSWORD=your_secure_password"
               ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 
@@ -111,7 +111,7 @@ resource "aws_instance" "ec2" {
               # Reload systemd to apply changes
               sudo systemctl daemon-reload
               sudo systemctl enable --now code-server
-            EOF
+              EOF
   tags = {
     Name = "public-ec2-instance"
   }

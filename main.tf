@@ -82,6 +82,9 @@ resource "aws_instance" "ec2" {
               # Install VS Code Server
               curl -fsSL https://code-server.dev/install.sh | sh
 
+              # Create symbolic link for code-server
+              sudo ln -s /usr/lib/code-server/bin/code-server /usr/bin/code-server
+
               # Create VS Code Server systemd service with password setup
               echo '[Unit]
               Description=VS Code Server
@@ -91,7 +94,7 @@ resource "aws_instance" "ec2" {
               Type=simple
               User=ubuntu
               Environment="PASSWORD=105319"
-              ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
+              ExecStart=/usr/lib/code-server/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 
               [Install]

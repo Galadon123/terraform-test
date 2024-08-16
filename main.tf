@@ -90,7 +90,7 @@ resource "aws_instance" "ec2" {
               [Service]
               Type=simple
               User=ubuntu
-              Environment="PASSWORD=2525"
+              Environment="PASSWORD=105925"
               ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 

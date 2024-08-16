@@ -10,7 +10,7 @@ By the end of this lab, you will be able to:
 
 1. Automate the deployment of an AWS VPC with a public subnet using Terraform and GitHub Actions.
 2. Securely manage and store an SSH public key using GitHub Secrets.
-3. Deploy an EC2 instance within the public subnet.
+3. Deploy an EC2 instance within the public subnets.
 4. Store and manage the Terraform state file in Terraform Cloud.
 5. Output key information such as the EC2 instance’s public IP, VPC ID, Subnet ID, and Security Group ID.
 

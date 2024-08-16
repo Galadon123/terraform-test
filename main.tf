@@ -79,6 +79,17 @@ resource "aws_instance" "ec2" {
               sudo apt-get update
               sudo apt-get upgrade -y
 
+              # Install Docker
+              sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+              sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+              sudo apt-get update
+              sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+
+              # Install the latest Node.js version
+              curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+
               # Install VS Code Server
               curl -fsSL https://code-server.dev/install.sh | sh
 

@@ -8,34 +8,13 @@ terraform {
   }
 }
 
-
 provider "aws" {
   region = "ap-southeast-1"
 }
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "4.0.0"
-
-  name = "my-vpc-porodhi"
-  cidr = "10.0.0.0/16"
-
-  azs            = ["ap-southeast-1a"]
-  public_subnets = ["10.0.1.0/24"]
-
-  enable_dns_hostnames = true
-  enable_dns_support   = true
-
-  map_public_ip_on_launch = true
-
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
-}
-
 resource "aws_security_group" "ec2_sg" {
-  vpc_id = module.vpc.vpc_id
+  # Use the default VPC ID
+  vpc_id = data.aws_vpc.default.id
 
   ingress {
     from_port   = 22
@@ -68,11 +47,20 @@ resource "aws_key_pair" "main" {
   public_key = var.ssh_public_key
 }
 
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "default" {
+  vpc_id = data.aws_vpc.default.id
+}
+
 resource "aws_instance" "ec2" {
   ami           = "ami-060e277c0d4cce553"  # Example Ubuntu AMI
   instance_type = "t2.micro"
-  subnet_id     = module.vpc.public_subnets[0]
+  subnet_id     = data.aws_subnet_ids.default.ids[0]
   key_name      = aws_key_pair.main.key_name
+
   user_data = <<-EOF
               #!/bin/bash
               # Update and install necessary packages
@@ -101,7 +89,7 @@ resource "aws_instance" "ec2" {
               [Service]
               Type=simple
               User=ubuntu
-              Environment="PASSWORD=2525"
+              Environment="PASSWORD=105925"
               ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080
               Restart=on-failure
 
@@ -112,10 +100,10 @@ resource "aws_instance" "ec2" {
               sudo systemctl daemon-reload
               sudo systemctl enable --now code-server
               EOF
+
   tags = {
     Name = "public-ec2-instance"
   }
 
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-
 }
